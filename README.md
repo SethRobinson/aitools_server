@@ -17,6 +17,7 @@ Or, don't use my front-end client and just use its API directly:
 
 * (merged with latest auto1111 stuff)
 * 0.44: Fixed issues with latest automatic1111 and the AI Client, but requires AI Client 0.59+ now
+* Merged with Auto1111's latest stuff on April 14th, 2023
 
 ## Installation and Running (modified from [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki) docs)
 Make sure the required [dependencies](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies) are met and follow the instructions available for both [NVidia](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-NVidia-GPUs) (recommended) and [AMD](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) GPUs.

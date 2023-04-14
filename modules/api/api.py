@@ -29,6 +29,7 @@ from modules import devices
 from typing import List
 import piexif
 import piexif.helper
+import asyncio #fix for io error https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/9046
 
 #Seth's stuff from the aitools dir
 from PIL import ImageOps
@@ -358,6 +359,18 @@ class Api:
         return script_args
 
     def text2imgapi(self, txt2imgreq: StableDiffusionTxt2ImgProcessingAPI):
+        
+        # HACK to fix thread issue START https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/9046
+        try:
+             loop = asyncio.get_event_loop()
+        except RuntimeError as e:
+             if str(e).startswith('There is no current event loop in thread'):
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+             else:
+                raise
+        # HACK to fix thread issue END
+        
         script_runner = scripts.scripts_txt2img
         if not script_runner.scripts:
             script_runner.initialize_scripts(False)
