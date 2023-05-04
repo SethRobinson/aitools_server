@@ -1,8 +1,6 @@
 # AI Tools Server (made to be used with Seth's AI Tools front-end)
 
-This is a forked version of the [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) project - basically the same thing with some additional API features like background removal.
-
-Warning: I think this server requires an NVidia card, that's all I've tested it with
+This is a forked version of the [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) project - basically the same thing with some additional API features like background removal.  Setup is the same, so check their github for better docs.
 
 ### This server is designed to be used with the [Seth's AI Tools Client](https://github.com/SethRobinson/aitools_client) <-- github page that has its download and screenshots/movies ###
 
@@ -13,11 +11,10 @@ Or, don't use my front-end client and just use its API directly:
 
 **Note:**  This repository was deleted and replaced with the [AUTOMATIC1111/stable-diffusion-webui](github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) fork Sept 19th 2022, specific missing features that I need are folded into it. Previously I had written my own custom server but that was like, too much work man
 
-# Last update Feb 8th, 2023, recent changes:
+# Last update May 4th, 2023, recent changes:
 
 * (merged with latest auto1111 stuff)
-* 0.44: Fixed issues with latest automatic1111 and the AI Client, but requires AI Client 0.59+ now
-* Merged with Auto1111's latest stuff on April 14th, 2023
+* Versioned to 0.45
 
 ## Installation and Running (modified from [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki) docs)
 Make sure the required [dependencies](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies) are met and follow the instructions available for both [NVidia](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-NVidia-GPUs) (recommended) and [AMD](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) GPUs.
