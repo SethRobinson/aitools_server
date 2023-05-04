@@ -34,3 +34,5 @@ notification.mp3
 /test/stderr.txt
 /aitools/.ipynb_checkpoints/*
 /cache.json
+/cache.json*
+/config_states/
