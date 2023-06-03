@@ -36,3 +36,6 @@ notification.mp3
 /cache.json
 /cache.json*
 /config_states/
+/node_modules
+/package-lock.json
+/.coverage*
