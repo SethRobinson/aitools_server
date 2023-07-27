@@ -11,7 +11,7 @@ Or, don't use my front-end client and just use its API directly:
 
 **Note:**  This repository was deleted and replaced with the [AUTOMATIC1111/stable-diffusion-webui](github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) fork Sept 19th 2022, specific missing features that I need are folded into it. Previously I had written my own custom server but that was like, too much work man
 
-# Last update July 14th, 2023, recent changes:
+# Last update July 28th, 2023, recent changes:
 
 * (merged with latest auto1111 stuff)
 
@@ -135,5 +135,6 @@ Then on the client, click Configure and edit in an add_server command for both s
 - Security advice - RyotaK
 - UniPC sampler - Wenliang Zhao - https://github.com/wl-zhao/UniPC
 - TAESD - Ollin Boer Bohan - https://github.com/madebyollin/taesd
+- LyCORIS - KohakuBlueleaf
 - Initial Gradio script - posted on 4chan by an Anonymous user. Thank you Anonymous user.
 - (You)
