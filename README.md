@@ -38,7 +38,9 @@ Note:  Requires Python 3.9+!
 # Debian-based:
 sudo apt install wget git python3 python3-venv libgl1 libglib2.0-0
 # Red Hat-based:
-sudo dnf install wget git python3
+sudo dnf install wget git python3 gperftools-libs libglvnd-glx 
+# openSUSE-based:
+sudo zypper install wget git python3 libtcmalloc4 libglvnd
 # Arch-based:
 sudo pacman -S wget git python3
 ```
@@ -113,11 +115,12 @@ Then on the client, click Configure and edit in an add_server command for both s
 - The original [stable-diffusion-webui project](https://github.com/AUTOMATIC1111/stable-diffusion-webui) the server portion is forked from
 - Stable Diffusion - https://github.com/CompVis/stable-diffusion, https://github.com/CompVis/taming-transformers
 - k-diffusion - https://github.com/crowsonkb/k-diffusion.git
-- GFPGAN - https://github.com/TencentARC/GFPGAN.git
-- CodeFormer - https://github.com/sczhou/CodeFormer
-- ESRGAN - https://github.com/xinntao/ESRGAN
-- SwinIR - https://github.com/JingyunLiang/SwinIR
-- Swin2SR - https://github.com/mv-lab/swin2sr
+- Spandrel - https://github.com/chaiNNer-org/spandrel implementing
+  - GFPGAN - https://github.com/TencentARC/GFPGAN.git
+  - CodeFormer - https://github.com/sczhou/CodeFormer
+  - ESRGAN - https://github.com/xinntao/ESRGAN
+  - SwinIR - https://github.com/JingyunLiang/SwinIR
+  - Swin2SR - https://github.com/mv-lab/swin2sr
 - LDSR - https://github.com/Hafiidz/latent-diffusion
 - MiDaS - https://github.com/isl-org/MiDaS
 - Ideas for optimizations - https://github.com/basujindal/stable-diffusion
@@ -138,5 +141,6 @@ Then on the client, click Configure and edit in an add_server command for both s
 - TAESD - Ollin Boer Bohan - https://github.com/madebyollin/taesd
 - LyCORIS - KohakuBlueleaf
 - Restart sampling - lambertae - https://github.com/Newbeeer/diffusion_restart_sampling
+- Hypertile - tfernd - https://github.com/tfernd/HyperTile
 - Initial Gradio script - posted on 4chan by an Anonymous user. Thank you Anonymous user.
 - (You)

@@ -32,7 +32,7 @@ def dump_cache():
         with cache_lock:
             cache_filename_tmp = cache_filename + "-"
             with open(cache_filename_tmp, "w", encoding="utf8") as file:
-                json.dump(cache_data, file, indent=4)
+                json.dump(cache_data, file, indent=4, ensure_ascii=False)
 
             os.replace(cache_filename_tmp, cache_filename)
 
@@ -62,16 +62,15 @@ def cache(subsection):
     if cache_data is None:
         with cache_lock:
             if cache_data is None:
-                if not os.path.isfile(cache_filename):
+                try:
+                    with open(cache_filename, "r", encoding="utf8") as file:
+                        cache_data = json.load(file)
+                except FileNotFoundError:
                     cache_data = {}
-                else:
-                    try:
-                        with open(cache_filename, "r", encoding="utf8") as file:
-                            cache_data = json.load(file)
-                    except Exception:
-                        os.replace(cache_filename, os.path.join(script_path, "tmp", "cache.json"))
-                        print('[ERROR] issue occurred while trying to read cache.json, move current cache to tmp/cache.json and create new cache')
-                        cache_data = {}
+                except Exception:
+                    os.replace(cache_filename, os.path.join(script_path, "tmp", "cache.json"))
+                    print('[ERROR] issue occurred while trying to read cache.json, move current cache to tmp/cache.json and create new cache')
+                    cache_data = {}
 
     s = cache_data.get(subsection, {})
     cache_data[subsection] = s

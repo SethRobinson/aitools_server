@@ -39,7 +39,7 @@ def api_only():
 
     print(f"Startup time: {startup_timer.summary()}.")
     api.launch(
-        server_name="0.0.0.0" if cmd_opts.listen else "127.0.0.1",
+        server_name=initialize_util.gradio_server_name(),
         port=cmd_opts.port if cmd_opts.port else 7861,
         root_path=f"/{cmd_opts.subpath}" if cmd_opts.subpath else ""
     )
@@ -80,7 +80,7 @@ def webui():
             if shared.opts.auto_launch_browser == "Remote" or cmd_opts.autolaunch:
                 auto_launch_browser = True
             elif shared.opts.auto_launch_browser == "Local":
-                auto_launch_browser = not any([cmd_opts.listen, cmd_opts.share, cmd_opts.ngrok, cmd_opts.server_name])
+                auto_launch_browser = not cmd_opts.webui_is_non_local
 
         app, local_url, share_url = shared.demo.launch(
             share=cmd_opts.share,

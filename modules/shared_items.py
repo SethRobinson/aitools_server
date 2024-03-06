@@ -8,6 +8,11 @@ def realesrgan_models_names():
     return [x.name for x in modules.realesrgan_model.get_realesrgan_models(None)]
 
 
+def dat_models_names():
+    import modules.dat_model
+    return [x.name for x in modules.dat_model.get_dat_models(None)]
+
+
 def postprocessing_scripts():
     import modules.scripts
 
@@ -44,9 +49,9 @@ def refresh_unet_list():
     modules.sd_unet.list_unets()
 
 
-def list_checkpoint_tiles():
+def list_checkpoint_tiles(use_short=False):
     import modules.sd_models
-    return modules.sd_models.checkpoint_tiles()
+    return modules.sd_models.checkpoint_tiles(use_short)
 
 
 def refresh_checkpoints():
@@ -66,7 +71,25 @@ def reload_hypernetworks():
     shared.hypernetworks = hypernetwork.list_hypernetworks(cmd_opts.hypernetwork_dir)
 
 
+def get_infotext_names():
+    from modules import infotext_utils, shared
+    res = {}
+
+    for info in shared.opts.data_labels.values():
+        if info.infotext:
+            res[info.infotext] = 1
+
+    for tab_data in infotext_utils.paste_fields.values():
+        for _, name in tab_data.get("fields") or []:
+            if isinstance(name, str):
+                res[name] = 1
+
+    return list(res)
+
+
 ui_reorder_categories_builtin_items = [
+    "prompt",
+    "image",
     "inpaint",
     "sampler",
     "accordions",
