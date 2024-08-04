@@ -33,20 +33,14 @@ import piexif.helper
 from contextlib import closing
 import asyncio #fix for io error https://github.com/AUTOMATIC1111/stable-diffusion-webui/issues/9046
 
+from modules.progress import create_task_id, add_task_to_queue, start_task, finish_task, current_task
+
 #Seth's stuff from the aitools dir
-from PIL import ImageOps
+from PIL import ImageOps, Image
 from aitools.image_segmentation import DoImageSegmentationAndReturnMask
 from fastapi.responses import FileResponse
 import itertools
 
-
-def upscaler_to_index(name: str):
-    try:
-        return [x.name.lower() for x in shared.sd_upscalers].index(name.lower())
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid upscaler, needs to be one of these: {' , '.join([x.name for x in shared.sd_upscalers])}") from e
-
-from modules.progress import create_task_id, add_task_to_queue, start_task, finish_task, current_task
 
 def script_name_to_index(name, scripts):
     try:
@@ -146,6 +140,10 @@ def encode_pil_to_base64(image):
 
     return base64.b64encode(bytes_data)
 
+
+#Added by Seth:
+
+
 def ApplyMaskToImage(inputImage: Image, maskImage: Image):
 
     #to actually remove the background from the image, we do this:
@@ -219,6 +217,9 @@ def expand_alpha_mask_rgba(image, N):
     # Return the new image
     return new_image
     
+
+
+################ END SETH
 
 def api_middleware(app: FastAPI):
     rich_available = False
@@ -344,6 +345,7 @@ class Api:
         #to help Seth's from-end to understand that this is a modded 1111 server with extra features
         self.app.add_api_route("/aitools/get_info.json", self.get_info)
   
+
         txt2img_script_runner = scripts.scripts_txt2img
         img2img_script_runner = scripts.scripts_img2img
 
@@ -586,8 +588,7 @@ class Api:
     
         return models.TextToImageResponse(images=b64images, parameters=vars(txt2imgreq), info=processed.js())
 
-            
-    
+
     def img2imgapi(self, img2imgreq: models.StableDiffusionImg2ImgProcessingAPI):
         task_id = img2imgreq.force_task_id or create_task_id("img2img")
 
@@ -598,7 +599,6 @@ class Api:
         mask = img2imgreq.mask
         if mask:
             mask = decode_base64_to_image(mask)
-
 
         #Seth's AI Tools extension for auto masking the subject
         if img2imgreq.generate_subject_mask or img2imgreq.generate_subject_mask_reverse:
@@ -614,7 +614,7 @@ class Api:
 
                 # Apply the lookup table to the mask image
                 mask = mask.point(threshold_alpha)
-      
+
         script_runner = scripts.scripts_img2img
 
         infotext_script_args = {}
@@ -716,6 +716,8 @@ class Api:
         if not img2imgreq.include_init_images:
             img2imgreq.init_images = None
             img2imgreq.mask = None
+
+        return models.ImageToImageResponse(images=b64images, parameters=vars(img2imgreq), info=processed.js())
 
         return models.ImageToImageResponse(images=b64images, parameters=vars(img2imgreq), info=processed.js())
 
@@ -909,13 +911,7 @@ class Api:
             styleList.append({"name":style[0], "prompt": style[1], "negative_prompt": style[2]})
 
         return styleList
-
-    def get_artists_categories(self):
-        return shared.artist_db.cats
-
-    def get_artists(self):
-        return [{"name":x[0], "score":x[1], "category":x[2]} for x in shared.artist_db.artists]
-
+    
     def get_info(self):
         #this is just for Seth's server, it allows my client app to understand when it or the server's version is outdated
         return FileResponse("aitools/get_info.json")
@@ -1097,4 +1093,3 @@ class Api:
     def stop_webui(request):
         shared.state.server_command = "stop"
         return Response("Stopping.")
-

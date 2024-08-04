@@ -11,11 +11,10 @@ Or, don't use my front-end client and just use its API directly:
 
 **Note:**  This repository was deleted and replaced with the [AUTOMATIC1111/stable-diffusion-webui](github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) fork Sept 19th 2022, specific missing features that I need are folded into it. Previously I had written my own custom server but that was like, too much work man
 
-# Last update March 6th, 2024, recent changes:
+# Last update August 4th, 2024, recent changes:
 
 * (merged with latest auto1111 stuff)
-* Versioned to 0.48
-- Note - Auto1111's latest merge now causes us to requires Python 3.10+, I had to do "conda install python=3.10" to fix a "TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'" error.  Also, I had to do "pip install wget".
+* Versioned to 0.49
 
 ## Installation and Running (modified from [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki) docs)
 Make sure the required [dependencies](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies) are met and follow the instructions available for both [NVidia](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-NVidia-GPUs) (recommended) and [AMD](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs) GPUs.
