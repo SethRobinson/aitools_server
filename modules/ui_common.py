@@ -3,13 +3,11 @@ import dataclasses
 import json
 import html
 import os
-import platform
-import sys
+from contextlib import nullcontext
 
 import gradio as gr
-import subprocess as sp
 
-from modules import call_queue, shared, ui_tempdir
+from modules import call_queue, shared, ui_tempdir, util
 from modules.infotext_utils import image_from_url_text
 import modules.images
 from modules.ui_components import ToolButton
@@ -105,15 +103,16 @@ def save_files(js_data, images, do_make_zip, index):
     logfile_path = os.path.join(shared.opts.outdir_save, "log.csv")
 
     # NOTE: ensure csv integrity when fields are added by
-    # updating headers and padding with delimeters where needed
-    if os.path.exists(logfile_path):
+    # updating headers and padding with delimiters where needed
+    if shared.opts.save_write_log_csv and os.path.exists(logfile_path):
         update_logfile(logfile_path, fields)
 
-    with open(logfile_path, "a", encoding="utf8", newline='') as file:
-        at_start = file.tell() == 0
-        writer = csv.writer(file)
-        if at_start:
-            writer.writerow(fields)
+    with (open(logfile_path, "a", encoding="utf8", newline='') if shared.opts.save_write_log_csv else nullcontext()) as file:
+        if file:
+            at_start = file.tell() == 0
+            writer = csv.writer(file)
+            if at_start:
+                writer.writerow(fields)
 
         for image_index, filedata in enumerate(images, start_index):
             image = image_from_url_text(filedata)
@@ -133,7 +132,8 @@ def save_files(js_data, images, do_make_zip, index):
                 filenames.append(os.path.basename(txt_fullfn))
                 fullfns.append(txt_fullfn)
 
-        writer.writerow([parsed_infotexts[0]['Prompt'], parsed_infotexts[0]['Seed'], data["width"], data["height"], data["sampler_name"], data["cfg_scale"], data["steps"], filenames[0], parsed_infotexts[0]['Negative prompt'], data["sd_model_name"], data["sd_model_hash"]])
+        if file:
+            writer.writerow([parsed_infotexts[0]['Prompt'], parsed_infotexts[0]['Seed'], data["width"], data["height"], data["sampler_name"], data["cfg_scale"], data["steps"], filenames[0], parsed_infotexts[0]['Negative prompt'], data["sd_model_name"], data["sd_model_hash"]])
 
     # Make Zip
     if do_make_zip:
@@ -176,31 +176,7 @@ def create_output_panel(tabname, outdir, toprow=None):
         except Exception:
             pass
 
-        if not os.path.exists(f):
-            msg = f'Folder "{f}" does not exist. After you create an image, the folder will be created.'
-            print(msg)
-            gr.Info(msg)
-            return
-        elif not os.path.isdir(f):
-            msg = f"""
-WARNING
-An open_folder request was made with an argument that is not a folder.
-This could be an error or a malicious attempt to run code on your computer.
-Requested path was: {f}
-"""
-            print(msg, file=sys.stderr)
-            gr.Warning(msg)
-            return
-
-        path = os.path.normpath(f)
-        if platform.system() == "Windows":
-            os.startfile(path)
-        elif platform.system() == "Darwin":
-            sp.Popen(["open", path])
-        elif "microsoft-standard-WSL2" in platform.uname().release:
-            sp.Popen(["wsl-open", path])
-        else:
-            sp.Popen(["xdg-open", path])
+        util.open_folder(f)
 
     with gr.Column(elem_id=f"{tabname}_results"):
         if toprow:
@@ -255,7 +231,7 @@ Requested path was: {f}
                         )
 
                     save.click(
-                        fn=call_queue.wrap_gradio_call(save_files),
+                        fn=call_queue.wrap_gradio_call_no_job(save_files),
                         _js="(x, y, z, w) => [x, y, false, selected_gallery_index()]",
                         inputs=[
                             res.generation_info,
@@ -271,7 +247,7 @@ Requested path was: {f}
                     )
 
                     save_zip.click(
-                        fn=call_queue.wrap_gradio_call(save_files),
+                        fn=call_queue.wrap_gradio_call_no_job(save_files),
                         _js="(x, y, z, w) => [x, y, true, selected_gallery_index()]",
                         inputs=[
                             res.generation_info,

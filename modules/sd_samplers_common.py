@@ -54,7 +54,7 @@ def samples_to_images_tensor(sample, approximation=None, model=None):
     else:
         if model is None:
             model = shared.sd_model
-        with devices.without_autocast(): # fixes an issue with unstable VAEs that are flaky even in fp32
+        with torch.no_grad(), devices.without_autocast(): # fixes an issue with unstable VAEs that are flaky even in fp32
             x_sample = model.decode_first_stage(sample.to(model.first_stage_model.dtype))
 
     return x_sample
@@ -155,8 +155,19 @@ def replace_torchsde_browinan():
 replace_torchsde_browinan()
 
 
-def apply_refiner(cfg_denoiser):
-    completed_ratio = cfg_denoiser.step / cfg_denoiser.total_steps
+def apply_refiner(cfg_denoiser, sigma=None):
+    if opts.refiner_switch_by_sample_steps or sigma is None:
+        completed_ratio = cfg_denoiser.step / cfg_denoiser.total_steps
+        cfg_denoiser.p.extra_generation_params["Refiner switch by sampling steps"] = True
+
+    else:
+        # torch.max(sigma) only to handle rare case where we might have different sigmas in the same batch
+        try:
+            timestep = torch.argmin(torch.abs(cfg_denoiser.inner_model.sigmas.to(sigma.device) - torch.max(sigma)))
+        except AttributeError:  # for samplers that don't use sigmas (DDIM) sigma is actually the timestep
+            timestep = torch.max(sigma).to(dtype=int)
+        completed_ratio = (999 - timestep) / 1000
+
     refiner_switch_at = cfg_denoiser.p.refiner_switch_at
     refiner_checkpoint_info = cfg_denoiser.p.refiner_checkpoint_info
 
@@ -235,7 +246,7 @@ class Sampler:
         self.eta_infotext_field = 'Eta'
         self.eta_default = 1.0
 
-        self.conditioning_key = shared.sd_model.model.conditioning_key
+        self.conditioning_key = getattr(shared.sd_model.model, 'conditioning_key', 'crossattn')
 
         self.p = None
         self.model_wrap_cfg = None

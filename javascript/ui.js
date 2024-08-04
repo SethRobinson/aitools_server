@@ -26,6 +26,14 @@ function selected_gallery_index() {
     return all_gallery_buttons().findIndex(elem => elem.classList.contains('selected'));
 }
 
+function gallery_container_buttons(gallery_container) {
+    return gradioApp().querySelectorAll(`#${gallery_container} .thumbnail-item.thumbnail-small`);
+}
+
+function selected_gallery_index_id(gallery_container) {
+    return Array.from(gallery_container_buttons(gallery_container)).findIndex(elem => elem.classList.contains('selected'));
+}
+
 function extract_image_from_gallery(gallery) {
     if (gallery.length == 0) {
         return [null];
@@ -136,8 +144,7 @@ function showSubmitInterruptingPlaceholder(tabname) {
 function showRestoreProgressButton(tabname, show) {
     var button = gradioApp().getElementById(tabname + "_restore_progress");
     if (!button) return;
-
-    button.style.display = show ? "flex" : "none";
+    button.style.setProperty('display', show ? 'flex' : 'none', 'important');
 }
 
 function submit() {
@@ -209,6 +216,7 @@ function restoreProgressTxt2img() {
     var id = localGet("txt2img_task_id");
 
     if (id) {
+        showSubmitInterruptingPlaceholder('txt2img');
         requestProgress(id, gradioApp().getElementById('txt2img_gallery_container'), gradioApp().getElementById('txt2img_gallery'), function() {
             showSubmitButtons('txt2img', true);
         }, null, 0);
@@ -223,6 +231,7 @@ function restoreProgressImg2img() {
     var id = localGet("img2img_task_id");
 
     if (id) {
+        showSubmitInterruptingPlaceholder('img2img');
         requestProgress(id, gradioApp().getElementById('img2img_gallery_container'), gradioApp().getElementById('img2img_gallery'), function() {
             showSubmitButtons('img2img', true);
         }, null, 0);
@@ -298,6 +307,7 @@ onAfterUiUpdate(function() {
     var jsdata = textarea.value;
     opts = JSON.parse(jsdata);
 
+    executeCallbacks(optionsAvailableCallbacks); /*global optionsAvailableCallbacks*/
     executeCallbacks(optionsChangedCallbacks); /*global optionsChangedCallbacks*/
 
     Object.defineProperty(textarea, 'value', {
@@ -336,8 +346,8 @@ onOptionsChanged(function() {
 let txt2img_textarea, img2img_textarea = undefined;
 
 function restart_reload() {
+    document.body.style.backgroundColor = "var(--background-fill-primary)";
     document.body.innerHTML = '<h1 style="font-family:monospace;margin-top:20%;color:lightgray;text-align:center;">Reloading...</h1>';
-
     var requestPing = function() {
         requestGet("./internal/ping", {}, function(data) {
             location.reload();
@@ -411,7 +421,7 @@ function switchWidthHeight(tabname) {
 
 var onEditTimers = {};
 
-// calls func after afterMs milliseconds has passed since the input elem has beed enited by user
+// calls func after afterMs milliseconds has passed since the input elem has been edited by user
 function onEdit(editId, elem, afterMs, func) {
     var edited = function() {
         var existingTimer = onEditTimers[editId];

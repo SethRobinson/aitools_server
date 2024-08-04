@@ -39,7 +39,7 @@ Note:  Requires Python 3.10+ now!
 # Debian-based:
 sudo apt install wget git python3 python3-venv libgl1 libglib2.0-0
 # Red Hat-based:
-sudo dnf install wget git python3 gperftools-libs libglvnd-glx 
+sudo dnf install wget git python3 gperftools-libs libglvnd-glx
 # openSUSE-based:
 sudo zypper install wget git python3 libtcmalloc4 libglvnd
 # Arch-based:
