@@ -1,4 +1,8 @@
-# AI Tools Server (made to be used with Seth's AI Tools front-end)
+# NOTE: This is dead! The latest version of Seth's AI Tools only supports ComfyUI, this customized Auto1111 server is no longer used.
+
+No reason to delete the repo though, so here it stays.  The only reason to go back to it and an old version of AI Tools is because the live webcam currently works better on this.
+
+### AI Tools Server (made to be used with Seth's AI Tools front-end)
 
 This is a forked version of the [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) project - basically the same thing with some additional API features like background removal.  Setup is the same, so check their github for better docs.
 
